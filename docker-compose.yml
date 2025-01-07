@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"  # Map port 80 in the container to port 5000 on the host
+    environment:
+      - ConnectionStrings__cnPortfolio=Data Source=sqlserver;Initial Catalog=Portfolio;User Id=dotnet;Password=admin;  # Update connection string
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=admin
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"  # Map SQL Server port
+    volumes:
+      - sql_data:/var/opt/mssql  # Persist SQL Server data
+
+volumes:
+  sql_data:
